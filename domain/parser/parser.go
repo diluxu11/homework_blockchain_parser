@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"awesomeProject/dal/redis"
 	"awesomeProject/model"
 	"context"
 )
@@ -9,9 +10,11 @@ type IParser interface {
 	// last parsed block
 	GetCurrentBlock() int
 	// add address to observer
-	Subscribe(address string) bool
+	Subscribe(address string)
+	// check subscription status of address
+	CheckSubscription(address string) bool
 	// list of inbound or outbound transactions for an address
-	GetTransactions(address string) []model.Transaction
+	GetTransactions(address string) []*model.Transaction
 }
 
 type Parser struct {
@@ -19,29 +22,17 @@ type Parser struct {
 }
 
 func (n *Parser) GetCurrentBlock() int {
-	return 0
+	return redis.GetCurrentScannedBlock()
 }
 
-func (n *Parser) Subscribe(address string) bool {
-	return true
+func (n *Parser) Subscribe(address string) {
+	redis.AddAddress2Subscription(address)
 }
 
-func (n *Parser) GetTransactions(address string) []model.Transaction {
-	return nil
+func (n *Parser) CheckSubscription(address string) bool {
+	return redis.CheckSubscription(address)
 }
 
-type NotificationParser struct {
-	Parser
-}
-
-func (n *NotificationParser) GetCurrentBlock() int {
-	return 0
-}
-
-func (n *NotificationParser) Subscribe(address string) bool {
-	return true
-}
-
-func (n *NotificationParser) GetTransactions(address string) []model.Transaction {
-	return nil
+func (n *Parser) GetTransactions(address string) []*model.Transaction {
+	return redis.GetTransactionListByAddress(address)
 }
