@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"awesomeProject/dal/redis"
+	"awesomeProject/handler"
+	"awesomeProject/utils"
+	"time"
+)
 
 func main() {
-	fmt.Println("hello world")
+	redis.Init()
+
+	// Set up a timer to trigger block scanner in every 30 seconds
+	ticker := utils.Schedule(handler.Scan, time.Second*30)
+
+	defer close(ticker)
 }

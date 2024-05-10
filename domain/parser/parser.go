@@ -1,6 +1,9 @@
-package main
+package parser
 
-import "context"
+import (
+	"awesomeProject/model"
+	"context"
+)
 
 type IParser interface {
 	// last parsed block
@@ -8,7 +11,7 @@ type IParser interface {
 	// add address to observer
 	Subscribe(address string) bool
 	// list of inbound or outbound transactions for an address
-	GetTransactions(address string) []Transaction
+	GetTransactions(address string) []model.Transaction
 }
 
 type Parser struct {
@@ -23,7 +26,7 @@ func (n *Parser) Subscribe(address string) bool {
 	return true
 }
 
-func (n *Parser) GetTransactions(address string) []Transaction {
+func (n *Parser) GetTransactions(address string) []model.Transaction {
 	return nil
 }
 
@@ -32,13 +35,13 @@ type NotificationParser struct {
 }
 
 func (n *NotificationParser) GetCurrentBlock() int {
-
+	return 0
 }
 
 func (n *NotificationParser) Subscribe(address string) bool {
 	return true
 }
 
-func (n *NotificationParser) GetTransactions(address string) []Transaction {
+func (n *NotificationParser) GetTransactions(address string) []model.Transaction {
 	return nil
 }
